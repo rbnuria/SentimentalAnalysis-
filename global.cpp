@@ -168,11 +168,8 @@ void db_normalized(vector <Instance> & data){
 	
 	for(unsigned i = 0; i < data.size(); i++){
 		for(unsigned j = 0; j < data[i].values.size(); j++){
-			if(data[i].values[j] == -1){
-				data[i].values[j] = 0;
-			}else if(data[i].values[j] == 0){
-				data[i].values[j] = 0.5;
-			}
+			
+			data[i].values[j] = (data[i].values[j] + 1)/2.0;
 		}
 	}
 }
