@@ -269,7 +269,7 @@ vector <int> select2Parents(int pos){
 	return returned;
 }
 
-void exe_DE_rand(vector <Instance> & train, vector <Instance> & test, float & tasa, float & time1, float & t_train, float & red1, float & agr1){
+void exe_DE_rand(vector <Instance> & train, vector <Instance> & test, float & tasa, float & time1, float & t_train){
 	//Variables auxilaires
 	unsigned t0, t1;
 	float elapsed_time;
@@ -285,24 +285,16 @@ void exe_DE_rand(vector <Instance> & train, vector <Instance> & test, float & ta
 	DE_rand(train, sol, 0.5, 0.5);
 	t1 = clock();
 
-	float aux4 = calculate_tasa_red(sol);
-	
-	//truncate(sol);
-	float aux2 = calculate_tasa_test(train,test,sol);
-	float aux3 = calculate_tasa_clas(train,sol);
-
-	float agr = aux2*0.5 + aux4*0.5;
+	float tasa_test = fitness(test,sol);
+	float tasa_train = fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 
 
-	tasa+=aux2;
-	t_train+=aux3;
-	time1+=elapsed_time;
-	red1+= aux4;
-	agr1+=agr;
+	tasa+=tasa_test;
+	t_train+=tasa_train;
 
-	cout << "\t" << aux2 << "\t" << aux4 << "\t" << agr << "\t" << elapsed_time << "\t" << aux3;
+	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
 
 }
 
@@ -314,31 +306,25 @@ void exe_DE_current_best(vector <Instance> & train, vector <Instance> & test, fl
 
 
 	vector <float> sol;
-	//Asignamos al vector sol el tamaño que hace falta y lo inicializamosu todo a 0
+	//Asignamos al vector sol el tamaño que hace falta y lo inicializamos todo a 0
 	for(unsigned i = 0; i < train.at(0).values.size(); i++){
 		sol.push_back(0);
 	}
 
 	t0 = clock();
-	DE_current_best(train, sol, 0.5, 0.5);
+	DE_rand(train, sol, 0.5, 0.5);
 	t1 = clock();
 
-	float aux4 = calculate_tasa_red(sol);
-	
-	//truncate(sol);
-	float aux2 = calculate_tasa_test(train,test,sol);
-	float aux3 = calculate_tasa_clas(train,sol);
-	float agr = aux2*0.5 + aux4*0.5;
+	float tasa_test = fitness(test,sol);
+	float tasa_train = fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 
-	tasa+=aux2;
-	t_train+=aux3;
-	time1+=elapsed_time;
-	red1+= aux4;
-	agr1+=agr;
 
-	cout << "\t" << aux2 << "\t" << aux4 << "\t" << agr << "\t" << elapsed_time << "\t" << aux3;
+	tasa+=tasa_test;
+	t_train+=tasa_train;
+
+	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
 
 }
 
@@ -349,31 +335,25 @@ void exe_DE_best(vector <Instance> & train, vector <Instance> & test, float & ta
 
 
 	vector <float> sol;
-	//Asignamos al vector sol el tamaño que hace falta y lo inicializamosu todo a 0
+	//Asignamos al vector sol el tamaño que hace falta y lo inicializamos todo a 0
 	for(unsigned i = 0; i < train.at(0).values.size(); i++){
 		sol.push_back(0);
 	}
 
 	t0 = clock();
-	DE_best(train, sol, 0.5, 0.5);
+	DE_rand(train, sol, 0.5, 0.5);
 	t1 = clock();
 
-	float aux4 = calculate_tasa_red(sol);
-	
-	//truncate(sol);
-	float aux2 = calculate_tasa_test(train,test,sol);
-	float aux3 = calculate_tasa_clas(train,sol);
-	float agr = aux2*0.5 + aux4*0.5;
+	float tasa_test = fitness(test,sol);
+	float tasa_train = fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 
-	tasa+=aux2;
-	t_train+=aux3;
-	time1+=elapsed_time;
-	red1+= aux4;
-	agr1+=agr;
 
-	cout << "\t" << aux2 << "\t" << aux4 << "\t" << agr << "\t" << elapsed_time << "\t" << aux3;
+	tasa+=tasa_test;
+	t_train+=tasa_train;
+
+	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
 
 }
 
