@@ -9,7 +9,6 @@ default_random_engine unif_generator_2;
 uniform_real_distribution<float> unif_distribution_2(0,1);
 
 void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F){
-
 	//Inicializamos la población
 	vector <vector <float>> population = initialize(50, sol.size());
 
@@ -34,7 +33,8 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 		}
 	}
 
-	while(eval < 15){
+	while(eval < 50000){
+
 		for(unsigned i = 0; i < size_pop; i++){
 			//Seleccionamos tres padres, excluyentes entre sí
 			parents = select3Parents(i);
@@ -276,6 +276,7 @@ void exe_DE_rand(vector <Instance> & train, vector <Instance> & test, float & ta
 
 
 	vector <float> sol;
+
 	//Asignamos al vector sol el tamaño que hace falta y lo inicializamos todo a 0
 	for(unsigned i = 0; i < train.at(0).values.size(); i++){
 		sol.push_back(0);
@@ -283,7 +284,9 @@ void exe_DE_rand(vector <Instance> & train, vector <Instance> & test, float & ta
 
 	t0 = clock();
 	DE_rand(train, sol, 0.5, 0.5);
+
 	t1 = clock();
+
 
 	float tasa_test = fitness(test,sol);
 	float tasa_train = fitness(train,sol);

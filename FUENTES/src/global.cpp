@@ -39,6 +39,7 @@ void readFile(char * name_file, vector <Instance> & d)
 	//Abrimos fichero
 	ifstream fi(name_file);
 	string line;
+
 	while(!fi.eof())
 	{
 		getline(fi, line);
@@ -51,7 +52,7 @@ void readFile(char * name_file, vector <Instance> & d)
 
 		for(unsigned i = 0 ; i < line.size() ; i++)
 		{
-			if(line[i] == ' ')
+			if(line[i] == ',')
 			{
 				vector_aux.push_back(atof(aux.c_str()));
 
@@ -100,7 +101,7 @@ float fitness(vector <Instance> & data, vector<float> & sol){
 		}
 	}
 
-	return num_success/data.size();
+	return num_success/(data.size() * 1.0);
 
 }
 
@@ -148,9 +149,10 @@ void db_normalized(vector <Instance> & data){
 	
 	for(unsigned i = 0; i < data.size(); i++){
 		for(unsigned j = 0; j < data[i].values.size(); j++){
-			
 			data[i].values[j] = (data[i].values[j] + 1)/2.0;
 		}
+
+		data[i].label = (data[i].label + 1)/2.0;
 	}
 }
 
@@ -218,7 +220,6 @@ void randomSolution(vector <float> & solution){
 
 	for(unsigned i = 0; i < solution.size(); i++){
 		rand_numb = distribution_random_1(generator_random_1);
-		
 		//Creo que esto no hace falta nunca.
 		if(rand_numb < 0.0){
 			rand_numb = 0.0;
@@ -231,18 +232,18 @@ void randomSolution(vector <float> & solution){
 	//normalized(solution);
 }
 
-//Lo generamos con un aleatorio entre 0,1
-default_random_engine generator_random;
-uniform_real_distribution<float> distribution_random(0,1);
 
 vector <float> generateRandomSolution(int size){
 	vector <float> solution;
+	float acumulado = 0;
 
 	for(int i = 0; i < size; i++){
-		float rand_numb = distribution_random(generator_random);
-		solution.push_back(rand_numb);
-	}
+		float rand_numb = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(1-acumulado)));
 
+		acumulado += rand_numb;
+		solution.push_back(rand_numb);
+
+	}
 
 	return solution;
 }
