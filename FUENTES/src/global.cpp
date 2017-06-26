@@ -232,7 +232,7 @@ void randomSolution(vector <float> & solution){
 	//normalized(solution);
 }
 
-
+/* PRIMERA VERSION: haciendolo en orden, favoreciendo a los primeros
 vector <float> generateRandomSolution(int size){
 	vector <float> solution;
 	float acumulado = 0;
@@ -246,7 +246,25 @@ vector <float> generateRandomSolution(int size){
 	}
 
 	return solution;
+}*/
+
+vector <float> generateRandomSolution(int size){
+	vector <float> solution;
+	float acumulado = 0;
+
+	for(int i = 0; i < size; i++){
+		float rand_numb = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(1-acumulado)));
+
+		acumulado += rand_numb;
+		solution.push_back(rand_numb);
+
+	}
+
+	shuffle(solution.begin(), solution.end(),std::default_random_engine(1));
+
+	return solution;
 }
+
 
 
 void shuffle(vector <int> &v){

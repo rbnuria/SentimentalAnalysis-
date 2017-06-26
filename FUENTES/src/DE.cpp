@@ -33,7 +33,7 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 		}
 	}
 
-	while(eval < 50000){
+	while(eval < 25000){
 
 		for(unsigned i = 0; i < size_pop; i++){
 			//Seleccionamos tres padres, excluyentes entre sí
@@ -101,7 +101,7 @@ void DE_current_best(vector <Instance> & train, vector <float> & sol, float CR, 
 		}
 	}
 
-	while(eval < 500){
+	while(eval < 25000){
 		vector <int> parents;
 
 		for(unsigned i = 0; i < size_pop; i++){
@@ -168,7 +168,7 @@ void DE_best(vector <Instance> & train, vector <float> & sol, float CR, float F)
 		}
 	}
 
-	while(eval < 15000){
+	while(eval < 25000){
 		vector <int> parents;
 
 		for(unsigned i = 0; i < size_pop; i++){
