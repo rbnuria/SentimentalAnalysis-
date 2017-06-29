@@ -6,131 +6,6 @@ using namespace std;
 
 /************** ALGORITMOS GENÉTICOS GENERACIONALES ****************/
 
-vector <float> AGG_BLX(vector <Instance> & train, vector < vector <float> > & generation, vector < vector <float> > & second_generation){
-	int ev_fit = 0;
-	vector <float> best_solution;
-
-	//Guardamos en un vector el fitness de todas las soluciones para no llamarlo más
-	//veces de las necesarias
-	vector <float> fit_first;
-
- 	for(unsigned i = 0; i < generation.size(); i++){
- 		ev_fit++;
-		fit_first.push_back(fitness(train, generation[i]));
-	}
-
-	vector <float> fit_second;
-	
-	int nc = (int)((generation.size() * 0.7)); //número de cruces
-	//Elegimos con la esperanza matemática el número de mutaciones a realizar.
-	int nm = round((generation.size() * generation[0].size() * 0.001));
-
-
-	while(ev_fit < 15000){
-
-		//Elegimos los mejores de la generación para la fase de reemplazamiento
-		int max_pos = findMax(fit_first);
-
-		best_solution = generation[max_pos];
-
-		float best_fitness = fit_first[max_pos];
-
-		/////////FASE DE SELECCION
-
-		//Realizamos tantos torneos como individuos en la generacion para conseguir la generacion estacionaria
-		for(unsigned i = 0; i < generation.size(); i++){
-			//Seleccionamos dos elementos de forma aleatoria de la primera generacion
-
-			int pos1 = (int)(rand()%generation.size());
-			int pos2;
-			do{
-				pos2 = (int)(rand()%generation.size());
-			}while(pos1 == pos2); //Los elementos tienen que ser distintos
-
-			//Añadimos a la generacion el mejor de los dos y guaradmos sus fitness
-			if(fit_first[pos1] > fit_first[pos2]){
-				second_generation.push_back(generation[pos1]);
-				fit_second.push_back(fit_first[pos1]);
-
-			}else{
-				second_generation.push_back(generation[pos2]);
-				fit_second.push_back(fit_first[pos2]);
-			}
-		}//Ya tenemos una generacion de padres del mismo tamaño que la de hijos
-
-		/////////////FASE DE CRUCE: 
-		//La probabilidad de cruce será de 0.7, elegimos de antemano 
-		//los cromosomas q se cruzan y los cruzamos (en vez de generar tantos números aleatorios)
-
-		for(int i = 0; i < nc; i = i+2){
-			//Los cruzamos el 70% de los cromosomas (los primeros)
-			BLX(second_generation[i], second_generation[i+1]);
-			//Actualizamos fitness 
-			ev_fit++;
-			fit_second[i] = fitness(train, second_generation[i]);
-			ev_fit++;
-			fit_second[i+1] = fitness(train, second_generation[i+1]);
-		}
-
-		///////////FASE DE MUTACIÓN: 
-		//Elegimos de antemano los que se van a mutar.
-
-
-		int c, gen; //Cromosoma y gen a mutar
-
-
-		for(int i = 0; i < nm; i++){
-			c = (int)(rand()%second_generation.size());
-			gen = (int)(rand()%second_generation[c].size());
-
-			//Actualizamos el fitness
-			mutate(second_generation[c], gen);
-			ev_fit++;
-			fit_second[c] = fitness(train, second_generation[c]);
-
-		}
-
-
-		///////////FASE DE REEMPLAZAMIENTO:
-		//Realizamos un reemplazamiento por elitismo, buscamos el mejor de la primera y lo añadimos
-		//a la segunda.
-
-		//Comprobamos si habíamos añadido al mejor de la otra
-		bool max_add = false;
-		for(unsigned i = 0; i < second_generation.size() && !max_add; i++){
-			if(second_generation[i] == best_solution){
-				max_add = true;
-			}
-		}
-
-		if(!max_add){
-			//Buscamos la peor solución de la segunda generación y sustituímos
-			int pos_min = findMin(fit_second);
-			second_generation[pos_min] = best_solution;
-			fit_second[pos_min] = best_fitness;
-		}
-
-
-		//Guardamos las variables de la segunda generación en las de la primera
-		generation = second_generation;
-		fit_first = fit_second;
-
-		//Las variables de la segunda generación las limpiamos
-		second_generation.clear();
-		fit_second.clear();
-
-	}
-
-
-	//Buscamos la mejor solución en la última generación y lo devolvemos.
-	int max = findMax(fit_first);
-
-	return generation[max];
-
-
-
-}
-
 vector <float> AGG_CA(vector <Instance> & train, vector < vector <float> > & generation, vector < vector <float> > & second_generation){
 	int ev_fit = 0;
 	vector <float> best_solution;
@@ -148,10 +23,17 @@ vector <float> AGG_CA(vector <Instance> & train, vector < vector <float> > & gen
 	vector <float> fit_second;
 
 	int nc = (int)((generation.size() * 0.7)); //número de cruces
+
+
 	int nm = round((generation.size() * generation[0].size() * 0.001));
 
 
-	while(ev_fit < 5000000){
+	//MEJORA: Hacer la probabilidad de mutación muy alta al principio e ir disminuyendo de forma proporcional.
+	//int nm = round((generation.size() * generation[0].size() * 0.5)); 
+
+
+
+	while(ev_fit < 100000){
 
 		//Elegimos los mejores de la generación para la fase de reemplazamiento
 		int max_pos = findMax(fit_first);
@@ -247,6 +129,7 @@ vector <float> AGG_CA(vector <Instance> & train, vector < vector <float> > & gen
 
 			//Actualizamos el fitness
 			mutate(second_generation[c], gen);
+			normalize_solution(second_generation[c]);
 			ev_fit++;
 			fit_second[c] = fitness(train, second_generation[c]);
 		}
@@ -279,6 +162,9 @@ vector <float> AGG_CA(vector <Instance> & train, vector < vector <float> > & gen
 		second_generation.clear();
 		fit_second.clear();
 
+		//MEJORA: Disminuimos la probabilidad de mutación al fnial.
+		//nm = nm * 0.9;
+
 	}
 	//Buscamos la mejor solución en la última generación y lo devolvemos.
 	int max = findMax(fit_first);
@@ -288,118 +174,6 @@ vector <float> AGG_CA(vector <Instance> & train, vector < vector <float> > & gen
 
 
 /**************** ALGORITMOS GENÉTICOS ESTACIONARIOS **********************/
-
-
-vector <float> AGE_BLX(vector <Instance> & train, vector <vector <float> > & generation){
-	
-	int ev_fit = 0;
-	vector <float> fit_first;
-
- 	for(unsigned i = 0; i < generation.size(); i++){
- 		ev_fit++;
-		fit_first.push_back(fitness(train, generation[i]));
-	}
-
-
-	//Calculamos cada cuantas iteraciones tenemos que mutar.
-
-	//Generamos 15000 * 2 cromosomas, cada cromosoma tiene train[0].size() genes, luego queremos mutar
-	float nm =  2 * generation.at(0).size() * 0.001; //Probabilidad de cruce en una vuelta
-	int n_iter = round(1.0/nm); //número de iteraciones necesarias para q la probabilidad sea 1 y mutamos un hijo (el primero por ejemplo)
-
-	int iter_count=0; //Contador de iteraciones para contabilizar las mutaciones
-
-	////FASE DE SELECCIÓN: Realizamos dos torneos binarios, de donde elegiremos a los padres que
-	//serán posteriormente recombinados
-
-
-	while(ev_fit < 15000){
-
-		vector <float> father1;
-		vector <float> father2;
-
-		int pos1 = (int)(rand()%generation.size());
-		int pos2;
-		do{
-			pos2 = (int)(rand()%generation.size());
-		}while(pos1 == pos2); //Hasta que tengamos dos posiciones diferentes
-		
-		if(fit_first[pos1] > fit_first[pos2]){
-			father1 = generation[pos1];
-		}else{
-			father1 = generation[pos2];
-		} 
-
-		pos1 = (int)(rand()%generation.size());
-		do{
-			pos2 = (int)(rand()%generation.size());
-		}while(pos1 == pos2); //Hasta que tengamos dos posiciones diferentes
-		
-		if(fit_first[pos1] > fit_first[pos2]){
-			father2 = generation[pos1];
-		}else{
-			father2 = generation[pos2];
-		}
-
-		//Ya tenemos los dos padres
-
-		//FASE DE CRUCE:
-		//Cruzamos los dos padres obtenidos anteriormente, guardando en ello cada uno de los hijos
-		//generados tras el cruce
-		BLX(father1, father2);
-
-		//FASE DE MUTACIÓN: La probabilidad de mutación es de 0.001 por gen, así creamos una generación
-		//Para ello creamos una generación auxiliar
-
-
-
-		if(iter_count == n_iter){
-
-			//Hacemos randon para elegir el gen a mutar
-			int gen = (int)(rand()%father1.size());
-			
-			mutate(father1, gen);
-			iter_count = 0;
-		}
-
-
-
-		//Los añadimos
-		generation.push_back(father1);
-		generation.push_back(father2);
-
-		ev_fit++;
-		fit_first.push_back(fitness(train, father1));
-
-		ev_fit++;
-		fit_first.push_back(fitness(train, father2));
-
-
-		//FASE DE REEMPLAZAMIENTO: Los dos padres sustituyen a los dos peores de la población
-		//si son ellos pues no. Como ya los habíamos incluído, basta con elimiar los dos peores.
-
-		int pos_min = findMin(fit_first);
-		generation.erase(generation.begin() + pos_min);
-		fit_first.erase(fit_first.begin() + pos_min);
-
-
-
-		//Otra vez 
-		pos_min = findMin(fit_first);
-		generation.erase(generation.begin() + pos_min);
-		fit_first.erase(fit_first.begin() + pos_min);
-
-
-		iter_count++;
-
-	}
-
-
-	//obtener aqui el maximo
-	int pos_max = findMax(fit_first);
-	return generation[pos_max];
-
-}
 
 
 vector <float> AGE_CA(vector <Instance> & train, vector <vector <float> > & generation){
@@ -420,7 +194,7 @@ vector <float> AGE_CA(vector <Instance> & train, vector <vector <float> > & gene
 	int iter_count=0; //Contador de iteraciones para contabilizar las mutaciones
 
 
-	while(ev_fit < 500000){
+	while(ev_fit < 100000){
 
 
 		////FASE DE SELECCIÓN: Realizamos dos torneos binarios, de donde elegiremos a los padres que
@@ -498,6 +272,8 @@ vector <float> AGE_CA(vector <Instance> & train, vector <vector <float> > & gene
 
 		if(iter_count == n_iter){
 			mutate(son1, gen);
+			normalize_solution(son1);
+
 			iter_count = 0;
 		}
 
@@ -542,64 +318,6 @@ default_random_engine uniform_generator;
 
 /****** MÉTODOS AUXILIARES *****/
 
-void BLX(vector <float> & first, vector <float> & second){
-	//Generamos los dos hijos según este operador de cruce y hacemos que sustituyan a los padres
-	
-	float c_max, c_min;
-
-	float aux, aux2;
-	float j, low ,high;
-
-	for(unsigned i = 0; i < first.size(); i++){
-		aux = first[i];
-		aux2 = second[i];
-
-		if(aux < aux2){
-			c_min = aux;
-			c_max = aux2;
-		}else{
-			c_min = aux2;
-			c_max = aux;
-		}
-
-		j = c_max - c_min;
-
-		low = c_min - j*0.3;
-		high = c_max + j*0.3;
-
-
-		uniform_real_distribution<double> unif_distribution(low,high);
-
-
-		//Generamos número aleatorio en el intervalo 
-		float num1 = unif_distribution(uniform_generator);
-		float num2 = unif_distribution(uniform_generator);
-
-		//Truncamos los números para q no se salgan del intervalo de definición.
-		if(num1 < 0.0){
-			num1 = 0.0;
-		}else if(num1 > 1.0){
-			num1 = 1.0;
-		}
-
-		if(num2 < 0.0){
-			num2 = 0.0;
-		}else if(num2 > 1.0){
-			num2 = 1.0;
-		}
-
-		first[i] = num1;
-		second[i] = num2;
-
-	}
-
-
-
-	//Ya hemos guardado en first y en second los dos hijos resultados de su cruce.
-}
-
-
-
 vector <float> CA(vector <float> & first, vector <float> & second){
 	vector <float> aux;
 
@@ -607,6 +325,18 @@ vector <float> CA(vector <float> & first, vector <float> & second){
 		aux.push_back((first[i] + second[i]) / 2.0);
 	}
 
+	//MEJORA
+	/*for(unsigned i = 0; i < aux.size(); i++){
+		if(aux[i] < 0.1){
+			aux[i] = 0;
+		}
+
+		if(aux[i] > 0.9){
+			aux[i] = 1;
+		}
+
+		normalize_solution(aux);
+	}*/
 
 
 	return aux;
@@ -646,76 +376,7 @@ vector <vector <float> > generate_generation(vector <Instance> & problem){
 }
 
 
-/******* MÉTODOS DE EJECUCIÓN ********/
-void exe_AGGBLX(vector <Instance> & train, vector <Instance> & test, float & tasa, float & time1, float & t_train, float & red1, float & agr1){
-
-	//Variables auxilaires
-	unsigned t0, t1;
-	float elapsed_time;
-
-
-	vector <vector <float>> first  = generate_generation(train);
-	vector <vector <float> > second;
-
-
-
-	t0 = clock();
-	vector <float> sol  = AGG_BLX(train, first, second);
-	t1 = clock();
-
-	float tasa_test = fitness(test,sol);
-	float tasa_train = fitness(train,sol);
-
-	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
-
-
-	tasa+=tasa_test;
-	t_train+=tasa_train;
-	time1+= elapsed_time;
-
-	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
-
-	cout << "\nSolución obtenida: \t";
-	for(unsigned i = 0; i < sol.size(); i++){
-		cout << sol[i] << "\t";
-	}
-
-}
-
-
-void exe_AGEBLX(vector <Instance> & train, vector <Instance> & test, float & tasa, float & time1, float & t_train){
-	
-
-	//Variables auxilaires
-	unsigned t0, t1;
-	float elapsed_time;
-
-
-	vector <vector <float>> first  = generate_generation(train);
-
-
-	t0 = clock();
-	vector <float> sol  = AGE_BLX(train, first);
-	t1 = clock();
-
-	float tasa_test = fitness(test,sol);
-	float tasa_train = fitness(train,sol);
-
-	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
-
-
-	tasa+=tasa_test;
-	t_train+=tasa_train;
-	time1+= elapsed_time;
-
-	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
-
-	cout << "\nSolución obtenida: \t";
-	for(unsigned i = 0; i < sol.size(); i++){
-		cout << sol[i] << "\t";
-	}
-
-}
+/******* MÉTODOS DE EJECUCIÓN *****/
 
 void exe_AGGCA(vector <Instance> & train, vector <Instance> & test, float & tasa, float & time1, float & t_train){
 
@@ -735,8 +396,8 @@ void exe_AGGCA(vector <Instance> & train, vector <Instance> & test, float & tasa
 	vector <float> sol  = AGG_CA(train, first, second);
 	t1 = clock();
 
-	float tasa_test = fitness(test,sol);
-	float tasa_train = fitness(train,sol);
+	float tasa_test = clasification_fitness(test,sol);
+	float tasa_train = clasification_fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 
@@ -769,8 +430,8 @@ void exe_AGECA(vector <Instance> & train, vector <Instance> & test, float & tasa
 	vector <float> sol  = AGE_CA(train, first);
 	t1 = clock();
 
-	float tasa_test = fitness(test,sol);
-	float tasa_train = fitness(train,sol);
+	float tasa_test = clasification_fitness(test,sol);
+	float tasa_train = clasification_fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 

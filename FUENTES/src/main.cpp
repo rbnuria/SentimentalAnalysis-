@@ -2,6 +2,7 @@
 #include "global.h"
 #include "DE.h"
 #include "genetics.h"
+#include "memetic.h"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ int main(int argc, char ** argv){
 
 	vector <float> trivial_sol;
 	for(unsigned i = 0; i < data[0].values.size(); i++){
-		trivial_sol.push_back(1/data[0].values.size() * 1.0);
+		trivial_sol.push_back(1.0/data[0].values.size() * 1.0);
 	}
 
 
@@ -39,7 +40,7 @@ int main(int argc, char ** argv){
 	float train_tasa_trivial = 0;
 	float test_tasa_trivial = 0;
 
-
+/*
 	cout << "-------- DE-RAND" << endl;
 	for(int i = 0; i < 5; i++){
 		cout << "Partición " << i+1;
@@ -54,11 +55,11 @@ int main(int argc, char ** argv){
 		}
 
 
-		exe_DE_rand(train_set, set[i], test_tasa, tiempo, train_tasa);
+		exe_DE_current_best(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
-		float aux1 = fitness(set[i],trivial_sol);
-		float aux2 = fitness(train_set,trivial_sol);
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
 
 		train_tasa_trivial += aux2;
 		test_tasa_trivial += aux1;
@@ -73,7 +74,8 @@ int main(int argc, char ** argv){
 	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
 	cout << "Media trivial: \t\t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
 
-/*
+
+
 	test_tasa_trivial = 0;
 	train_tasa_trivial = 0;
 
@@ -99,8 +101,8 @@ int main(int argc, char ** argv){
 		exe_DE_current_best(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
-		float aux1 = fitness(set[i],trivial_sol);
-		float aux2 = fitness(train_set,trivial_sol);
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
 
 		train_tasa_trivial += aux2;
 		test_tasa_trivial += aux1;
@@ -140,8 +142,8 @@ int main(int argc, char ** argv){
 		exe_DE_best(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
-		float aux1 = fitness(set[i],trivial_sol);
-		float aux2 = fitness(train_set,trivial_sol);
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
 
 		train_tasa_trivial += aux2;
 		test_tasa_trivial += aux1;
@@ -163,7 +165,7 @@ int main(int argc, char ** argv){
 	tiempo = 0;
 */
 
-/*
+
 	for(int i = 0; i < 5; i++){
 		cout << "Partición " << i+1;
 		vector <Instance> train_set;
@@ -177,11 +179,11 @@ int main(int argc, char ** argv){
 		}
 
 
-		exe_AGECA(train_set, set[i], test_tasa, tiempo, train_tasa);
+		exe_AM_10_01(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
-		float aux1 = fitness(set[i],trivial_sol);
-		float aux2 = fitness(train_set,trivial_sol);
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
 
 		train_tasa_trivial += aux2;
 		test_tasa_trivial += aux1;
@@ -196,7 +198,7 @@ int main(int argc, char ** argv){
 	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
 	cout << "Media trivial: \t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
 
-*/
+
 
 
 }

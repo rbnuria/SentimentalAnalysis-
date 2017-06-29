@@ -16,7 +16,7 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 	int eval = 0;
 	int dim = sol.size();
 	int size_pop = population.size();
-	float best_fitness = 0;
+	float best_fitness = -10000;
 	vector <float> best_sol;
 	vector <int> parents;
 
@@ -27,13 +27,15 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 		fit.push_back(aux_fitness);
 		eval++;
 
+
 		if(aux_fitness > best_fitness){
 			best_fitness = aux_fitness;
 			best_sol = population[i];
 		}
 	}
 
-	while(eval < 500000){
+
+	while(eval < 5000000){
 
 		for(unsigned i = 0; i < size_pop; i++){
 			//Seleccionamos tres padres, excluyentes entre sí
@@ -75,41 +77,7 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 	sol = best_sol;
 }
 
-//Normalizamos
-void normalize_solution(vector <float> & sol){
-	//Normalizamos la solución en [0,1]
-	float min = 100000;
-	float max = -100000;
-	float sum = 0;
 
-
-	//Buscamos máximo y mínimo.
-	for(unsigned i = 0; i < sol.size(); i++){
-		if(sol[i] < min){
-			min = sol[i];
-		}
-
-		if(sol[i] > max){
-			max = sol[i];
-		}
-	}
-
-	//Normalizamos en [0,1] y calculamos la suma
-	for(unsigned i = 0; i < sol.size(); i++){
-		if(max != min){
-			sol[i] = (sol[i] - min)/(max-min);
-		}else{
-			sol[i] = 0.0;
-		}
-
-		sum += sol[i];
-	}
-
-	//Hacemos que sumen todas las soluciones 1.
-	for(unsigned i = 0; i < sol.size(); i++){
-		sol[i] = sol[i]/sum;
-	}
-}
 
 
 default_random_engine unif_generator_3;
@@ -124,7 +92,7 @@ void DE_current_best(vector <Instance> & train, vector <float> & sol, float CR, 
 	int eval = 0;
 	int dim = sol.size();
 	int size_pop = population.size();
-	float best_fitness = 0;
+	float best_fitness = -10000;
 	vector <float> best_sol;
 	int best_index;
 
@@ -194,7 +162,7 @@ void DE_best(vector <Instance> & train, vector <float> & sol, float CR, float F)
 	int eval = 0;
 	int dim = sol.size();
 	int size_pop = population.size();
-	float best_fitness = 0;
+	float best_fitness = -10000;
 	vector <float> best_sol;
 	int best_index;
 
@@ -334,8 +302,8 @@ void exe_DE_rand(vector <Instance> & train, vector <Instance> & test, float & ta
 	t1 = clock();
 
 
-	float tasa_test = fitness(test,sol);
-	float tasa_train = fitness(train,sol);
+	float tasa_test = clasification_fitness(test,sol);
+	float tasa_train = clasification_fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 
@@ -370,8 +338,8 @@ void exe_DE_current_best(vector <Instance> & train, vector <Instance> & test, fl
 	DE_rand(train, sol, 0.5, 0.5);
 	t1 = clock();
 
-	float tasa_test = fitness(test,sol);
-	float tasa_train = fitness(train,sol);
+	float tasa_test = clasification_fitness(test,sol);
+	float tasa_train = clasification_fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 

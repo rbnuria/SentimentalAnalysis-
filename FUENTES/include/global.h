@@ -133,7 +133,9 @@ int findMin(vector <float> & v);
 
 int findMax(vector <float> & v);
 
-float clasification_fitness(vector <Instance> & data, vector<float> & sol);po
+float clasification_fitness(vector <Instance> & data, vector<float> & sol);
+
+void normalize_solution(vector <float> & sol);
 
 #endif
 
