@@ -171,7 +171,6 @@ void db_normalized(vector <Instance> & data){
 
 
 		for(unsigned j = 0; j < data.size(); j++){
-			cout << i << endl;
 
 			//Si hemos encontrado uno más grande
 			if(data.at(j).values.at(i) > max){
