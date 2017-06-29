@@ -105,6 +105,37 @@ float clasification_fitness(vector <Instance> & data, vector<float> & sol){
 
 }
 
+float fitness(vector <Instance> & data, vector<float> & sol){
+
+	int num_success = 0;
+	
+	for(unsigned i = 0; i < data.size(); i++){
+		float estimated_value=0;
+
+		for(unsigned j = 0; j < data[i].values.size(); j++){
+			estimated_value += data[i].values[j] * sol[j];
+		}
+
+		//Truncamos el valor estimado [0,0.33] [0.33, 0.66] [0.66,1]
+		if(estimated_value <= 0.33){
+			estimated_value = 0;
+		}else if(estimated_value <= 0.66){
+			estimated_value = 0.5;
+		}else{
+			estimated_value = 1;
+		}
+
+		if(estimated_value == data[i].label){
+			num_success++;
+		}
+	}
+
+	return num_success/(data.size() * 1.0);
+
+}
+
+/*
+
 float fitness(vector <Instance> & data, vector <float> & sol)
 {
 	float acum = 0.0;
@@ -121,8 +152,9 @@ float fitness(vector <Instance> & data, vector <float> & sol)
 		acum += (estimated_value-data[i].label)*(estimated_value-data[i].label);
 	}
 
-	return acum/(data.size()*1.0);
+	return (-acum/(data.size()*1.0));
 }
+*/
 
 vector <float> truncate(vector <float> & sol){
 
@@ -332,6 +364,17 @@ vector <float> generateRandomSolution(int size){
 
 	shuffle(solution.begin(), solution.end(),std::default_random_engine(1));
 
+	//MEJORA: truncar soluciones
+	for(unsigned i = 0; i < size; i++){
+		if(solution[i] < 0.1){
+			solution[i] = 0.0;
+		}
+
+		if(solution[i] > 0.9){
+			solution[i] = 1.0;
+		}
+	}
+
 	return solution;
 }
 
@@ -420,4 +463,39 @@ int findMax(vector <float> & v){
 	return pos;
 }
 
+//Normalizamos
+void normalize_solution(vector <float> & sol){
+	//Normalizamos la solución en [0,1]
+	float min = 100000;
+	float max = -100000;
+	float sum = 0;
+
+
+	//Buscamos máximo y mínimo.
+	for(unsigned i = 0; i < sol.size(); i++){
+		if(sol[i] < min){
+			min = sol[i];
+		}
+
+		if(sol[i] > max){
+			max = sol[i];
+		}
+	}
+
+	//Normalizamos en [0,1] y calculamos la suma
+	for(unsigned i = 0; i < sol.size(); i++){
+		if(max != min){
+			sol[i] = (sol[i] - min)/(max-min);
+		}else{
+			sol[i] = 0.0;
+		}
+
+		sum += sol[i];
+	}
+
+	//Hacemos que sumen todas las soluciones 1.
+	for(unsigned i = 0; i < sol.size(); i++){
+		sol[i] = sol[i]/sum;
+	}
+}
 
