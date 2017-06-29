@@ -52,6 +52,9 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 				}
 			}
 
+			//Normalizamos la solución para que representen tantos por ciento.
+			normalize_solution(offspring);
+
 			//Miro si el nuevo hijo es mejor que el padre
 			float offspring_fit = fitness(train, offspring);
 			eval++;
@@ -70,6 +73,42 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 	}
 
 	sol = best_sol;
+}
+
+//Normalizamos
+void normalize_solution(vector <float> & sol){
+	//Normalizamos la solución en [0,1]
+	float min = 100000;
+	float max = -100000;
+	float sum = 0;
+
+
+	//Buscamos máximo y mínimo.
+	for(unsigned i = 0; i < sol.size(); i++){
+		if(sol[i] < min){
+			min = sol[i];
+		}
+
+		if(sol[i] > max){
+			max = sol[i];
+		}
+	}
+
+	//Normalizamos en [0,1] y calculamos la suma
+	for(unsigned i = 0; i < sol.size(); i++){
+		if(max != min){
+			sol[i] = (sol[i] - min)/(max-min);
+		}else{
+			sol[i] = 0.0;
+		}
+
+		sum += sol[i];
+	}
+
+	//Hacemos que sumen todas las soluciones 1.
+	for(unsigned i = 0; i < sol.size(); i++){
+		sol[i] = sol[i]/sum;
+	}
 }
 
 
@@ -121,6 +160,9 @@ void DE_current_best(vector <Instance> & train, vector <float> & sol, float CR, 
 					offspring[j] = population[i][j];
 				}
 			}
+
+			//Normalizamos la solución para que representen tantos por ciento.
+			normalize_solution(offspring);
 
 			//Miro si el nuevo hijo es mejor que el padre
 			float offspring_fit = fitness(train, offspring);
@@ -187,6 +229,9 @@ void DE_best(vector <Instance> & train, vector <float> & sol, float CR, float F)
 					offspring[j] = population[i][j];
 				}
 			}
+
+			//Normalizamos la solución para que representen tantos por ciento.
+			normalize_solution(offspring);
 
 			//Miro si el nuevo hijo es mejor que el padre
 			float offspring_fit = fitness(train, offspring);
@@ -360,8 +405,8 @@ void exe_DE_best(vector <Instance> & train, vector <Instance> & test, float & ta
 	DE_rand(train, sol, 0.5, 0.5);
 	t1 = clock();
 
-	float tasa_test = fitness(test,sol);
-	float tasa_train = fitness(train,sol);
+	float tasa_test = clasification_fitness(test,sol);
+	float tasa_train = clasification_fitness(train,sol);
 
 	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 

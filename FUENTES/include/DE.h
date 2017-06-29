@@ -25,5 +25,7 @@ void exe_DE_current_best(vector <Instance> & train, vector <Instance> & test, fl
 
 void exe_DE_best(vector <Instance> & train, vector <Instance> & test, float & tasa, float & time1, float & t_train);
 
+void normalize_solution(vector <float> & sol);
+
 
 #endif

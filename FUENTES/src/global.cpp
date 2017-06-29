@@ -76,7 +76,7 @@ void readFile(char * name_file, vector <Instance> & d)
 
 
 //Utilizamos como función fitness el cálculo del tanto por ciento de acierto.
-float fitness(vector <Instance> & data, vector<float> & sol){
+float clasification_fitness(vector <Instance> & data, vector<float> & sol){
 
 	int num_success = 0;
 	
@@ -103,6 +103,25 @@ float fitness(vector <Instance> & data, vector<float> & sol){
 
 	return num_success/(data.size() * 1.0);
 
+}
+
+float fitness(vector <Instance> & data, vector <float> & sol)
+{
+	float acum = 0.0;
+
+	for(unsigned i = 0 ; i < data.size() ; i++)
+	{
+		float estimated_value = 0;
+
+		for(unsigned j = 0 ; j < data[i].values.size() ; j++)
+		{
+			estimated_value += data[i].values[j] * sol[j];
+		}
+
+		acum += (estimated_value-data[i].label)*(estimated_value-data[i].label);
+	}
+
+	return acum/(data.size()*1.0);
 }
 
 vector <float> truncate(vector <float> & sol){
@@ -183,8 +202,6 @@ void db_normalized(vector <Instance> & data){
 			}
 
 		}
-
-
 
 
 		//Una vez encontrado minimo y máximo para la característica "i", la normalizamos

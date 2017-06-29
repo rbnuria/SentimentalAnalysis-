@@ -19,13 +19,8 @@ int main(int argc, char ** argv){
 	readFile(db, data);
 
 
-	cout << data.size() << endl;
-	cout << data[0].values.size() << endl;
-
 	//Normalizamos los datos en {0,0.5,1}
 	db_normalized(data);
-
-	cout << "Aqui toy" << endl;
 
 
 	vector <vector <Instance> > set;
@@ -44,7 +39,7 @@ int main(int argc, char ** argv){
 	float train_tasa_trivial = 0;
 	float test_tasa_trivial = 0;
 
-/*
+
 	cout << "-------- DE-RAND" << endl;
 	for(int i = 0; i < 5; i++){
 		cout << "Partición " << i+1;
@@ -59,7 +54,6 @@ int main(int argc, char ** argv){
 		}
 
 
-		cout << "Es culpa del método " << endl;
 		exe_DE_rand(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
@@ -79,6 +73,7 @@ int main(int argc, char ** argv){
 	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
 	cout << "Media trivial: \t\t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
 
+/*
 	test_tasa_trivial = 0;
 	train_tasa_trivial = 0;
 
@@ -168,6 +163,7 @@ int main(int argc, char ** argv){
 	tiempo = 0;
 */
 
+/*
 	for(int i = 0; i < 5; i++){
 		cout << "Partición " << i+1;
 		vector <Instance> train_set;
@@ -200,7 +196,7 @@ int main(int argc, char ** argv){
 	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
 	cout << "Media trivial: \t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
 
-
+*/
 
 
 }
