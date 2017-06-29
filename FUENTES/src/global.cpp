@@ -52,7 +52,7 @@ void readFile(char * name_file, vector <Instance> & d)
 
 		for(unsigned i = 0 ; i < line.size() ; i++)
 		{
-			if(line[i] == ',')
+			if(line[i] == ' ')
 			{
 				vector_aux.push_back(atof(aux.c_str()));
 
@@ -88,9 +88,9 @@ float fitness(vector <Instance> & data, vector<float> & sol){
 		}
 
 		//Truncamos el valor estimado [0,0.33] [0.33, 0.66] [0.66,1]
-		if(0 <= estimated_value  && estimated_value <= 0.33){
+		if(estimated_value <= 0.33){
 			estimated_value = 0;
-		}else if(estimated_value < 0.66){
+		}else if(estimated_value <= 0.66){
 			estimated_value = 0.5;
 		}else{
 			estimated_value = 1;
@@ -144,7 +144,8 @@ void normalized(vector<float> & sol){
 	}
 }
 
-//Función que normaliza los datos de {-1,0,1} a {0,0.5,1}
+/* Deprecated.
+//Función que normaliza los datos a [0,1]
 void db_normalized(vector <Instance> & data){
 	
 	for(unsigned i = 0; i < data.size(); i++){
@@ -154,6 +155,60 @@ void db_normalized(vector <Instance> & data){
 
 		data[i].label = (data[i].label + 1)/2.0;
 	}
+}*/
+
+
+void db_normalized(vector <Instance> & data){
+	
+	//Vector de máximos y mínimos para cada característica
+	//Tamaño de los vectores (Instance.at(i).values.size())
+	float max, min;	
+	//Vamos recorriendo característica a característica en cada una de las instancias buscando
+	//el máximo y el mínimo
+	for(unsigned i = 0; i < data.at(0).values.size(); i++){
+		min = 10000000;
+		max = -100000;
+
+
+		for(unsigned j = 0; j < data.size(); j++){
+			cout << i << endl;
+
+			//Si hemos encontrado uno más grande
+			if(data.at(j).values.at(i) > max){
+				max = data.at(j).values.at(i);
+			}
+
+			//Si hemos encontrado uno más pequeño
+			if(data.at(j).values.at(i) < min){
+				min = data.at(j).values.at(i);
+			}
+
+		}
+
+
+
+
+		//Una vez encontrado minimo y máximo para la característica "i", la normalizamos
+
+		for(unsigned j = 0; j < data.size(); j++){
+			if(max != min){
+				data.at(j).values.at(i) = (data.at(j).values.at(i)-min)/(max-min);
+			}else{
+				data.at(j).values.at(i) = 0.0;
+			}
+
+
+
+
+		}	
+	}
+
+	//Cambiamos la etiqueta al {0, 0.5, 1}
+	for(unsigned i = 0; i < data.size(); i++){
+		data[i].label = (data[i].label + 1)/2.0;
+	}
+
+
 }
 
 
@@ -254,7 +309,6 @@ vector <float> generateRandomSolution(int size){
 
 	for(int i = 0; i < size; i++){
 		float rand_numb = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(1-acumulado)));
-
 		acumulado += rand_numb;
 		solution.push_back(rand_numb);
 
@@ -321,5 +375,33 @@ void swap(vector<int>  & v, int pos1, int pos2){
 	v.at(pos2) = aux;
 }
 
+int findMin(vector <float> & v){
+	float min = INF;
+	int pos = 0;
+	
+	for(unsigned i = 0; i < v.size(); i++){
+		if(v.at(i) < min){
+			min = v[i];
+			pos = i;
+		}
+	}
+
+	return pos;
+}
+
+
+int findMax(vector <float> & v){
+	float max = -9999999;
+	int pos;
+	
+	for(unsigned i = 0; i < v.size(); i++){
+		if(v.at(i) > max){
+			max = v[i];
+			pos = i;
+		}
+	}
+
+	return pos;
+}
 
 

@@ -129,6 +129,10 @@ int randomPos(vector <int> & vec);
 //Truncamos vector de pesos los que son < 0.1å
 vector <float> truncate(vector <float> & sol);
 
+int findMin(vector <float> & v);
+
+int findMax(vector <float> & v);
+
 
 
 #endif

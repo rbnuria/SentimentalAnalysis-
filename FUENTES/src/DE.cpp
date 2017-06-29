@@ -33,7 +33,7 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 		}
 	}
 
-	while(eval < 25000){
+	while(eval < 500000){
 
 		for(unsigned i = 0; i < size_pop; i++){
 			//Seleccionamos tres padres, excluyentes entre sí
@@ -45,6 +45,7 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 				if(unif_distribution_2(unif_generator_2) < CR){
 					//Aplicamos transformación
 					offspring[j] = population[parents[0]][j] + F*(population[parents[1]][j] - population[parents[2]][j]); 
+				
 				}else{
 					//Lo dejamos igual que el padre
 					offspring[j] = population[i][j];
@@ -101,7 +102,7 @@ void DE_current_best(vector <Instance> & train, vector <float> & sol, float CR, 
 		}
 	}
 
-	while(eval < 25000){
+	while(eval < 500000){
 		vector <int> parents;
 
 		for(unsigned i = 0; i < size_pop; i++){
@@ -168,7 +169,7 @@ void DE_best(vector <Instance> & train, vector <float> & sol, float CR, float F)
 		}
 	}
 
-	while(eval < 25000){
+	while(eval < 500000){
 		vector <int> parents;
 
 		for(unsigned i = 0; i < size_pop; i++){
@@ -296,8 +297,14 @@ void exe_DE_rand(vector <Instance> & train, vector <Instance> & test, float & ta
 
 	tasa+=tasa_test;
 	t_train+=tasa_train;
+	time1+= elapsed_time;
 
 	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
+
+	cout << "\nSolución obtenida: \t";
+	for(unsigned i = 0; i < sol.size(); i++){
+		cout << sol[i] << "\t";
+	}
 
 }
 
@@ -326,8 +333,14 @@ void exe_DE_current_best(vector <Instance> & train, vector <Instance> & test, fl
 
 	tasa+=tasa_test;
 	t_train+=tasa_train;
+	time1+= elapsed_time;
 
 	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
+
+	cout << "\nSolución obtenida: \t";
+	for(unsigned i = 0; i < sol.size(); i++){
+		cout << sol[i] << "\t";
+	}
 
 }
 
@@ -355,8 +368,14 @@ void exe_DE_best(vector <Instance> & train, vector <Instance> & test, float & ta
 
 	tasa+=tasa_test;
 	t_train+=tasa_train;
+	time1+= elapsed_time;
 
 	cout << "\t" << tasa_test << "\t" << elapsed_time << "\t" << tasa_train;
+
+	cout << "\nSolución obtenida: \t";
+	for(unsigned i = 0; i < sol.size(); i++){
+		cout << sol[i] << "\t";
+	}
 
 }
 
