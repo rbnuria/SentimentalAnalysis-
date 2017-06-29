@@ -365,7 +365,7 @@ vector <float> generateRandomSolution(int size){
 	shuffle(solution.begin(), solution.end(),std::default_random_engine(1));
 
 	//MEJORA: truncar soluciones
-	for(unsigned i = 0; i < size; i++){
+	/*for(unsigned i = 0; i < size; i++){
 		if(solution[i] < 0.1){
 			solution[i] = 0.0;
 		}
@@ -373,7 +373,7 @@ vector <float> generateRandomSolution(int size){
 		if(solution[i] > 0.9){
 			solution[i] = 1.0;
 		}
-	}
+	}*/
 
 	return solution;
 }

@@ -326,7 +326,7 @@ vector <float> CA(vector <float> & first, vector <float> & second){
 	}
 
 	//MEJORA
-	for(unsigned i = 0; i < aux.size(); i++){
+	/*for(unsigned i = 0; i < aux.size(); i++){
 		if(aux[i] < 0.1){
 			aux[i] = 0;
 		}
@@ -336,7 +336,7 @@ vector <float> CA(vector <float> & first, vector <float> & second){
 		}
 
 		normalize_solution(aux);
-	}
+	}*/
 
 
 	return aux;

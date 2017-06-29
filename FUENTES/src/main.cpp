@@ -2,6 +2,7 @@
 #include "global.h"
 #include "DE.h"
 #include "genetics.h"
+#include "memetic.h"
 
 using namespace std;
 
@@ -178,7 +179,7 @@ int main(int argc, char ** argv){
 		}
 
 
-		exe_AGGCA(train_set, set[i], test_tasa, tiempo, train_tasa);
+		exe_AM_10_01(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
 		float aux1 = clasification_fitness(set[i],trivial_sol);
