@@ -1,0 +1,5 @@
+\select@language {spanish}
+\select@language {spanish}
+\contentsline {section}{\numberline {1}Lista de grados de libertad}{2}
+\contentsline {subsection}{\numberline {1.1}Grado de libertad 0: Girar la cabeza}{2}
+\contentsline {section}{\numberline {2}Segunda Secci\IeC {\'o}n}{2}
