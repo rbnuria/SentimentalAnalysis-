@@ -1,0 +1,5 @@
+\select@language {spanish}
+\select@language {spanish}
+\contentsline {section}{\numberline {1}Introducci\IeC {\'o}n}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Contexto}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Sentiment Analysis y descripci\IeC {\'o}n del problema}{3}{subsection.1.2}
