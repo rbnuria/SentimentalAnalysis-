@@ -56,6 +56,9 @@
 \linespread{1.1}                        % Espacio entre líneas.
 \setlength\parindent{0pt}               % Selecciona la indentación para cada inicio de párrafo.
 \usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
 % Cabecera del documento. Se ajusta la línea de la cabecera.
 \renewcommand\headrule{
 	\begin{minipage}{1\textwidth}
@@ -156,7 +159,7 @@ Sentiment Analysis podría definirse como un problema de clasificación (ver \re
 
 Para obtener esta clasificación, existen varias alternativas:
 \begin{itemize}
-	\item \textbf{Aproximación por Aprendizaje Automático.} El problema se trata con técnicas de aprendizaje automático tales como Support Vector Machine o técnicas basadas en árboles. Pueden ser problemas supervisados o no supervisados. En los primeros el principal problema es que debemos tener un gran conjunto de comentarios ya etiquetados con el fin de aprender a partir de estos comentarios etiquetados. En los segundos, nuestro sentimiento se extrae a partir de funciones heurísticas u otras reglas predefinida.
+	\item \textbf{Aproximación por Aprendizaje Automático.} El problema se trata con técnicas de aprendizaje automático tales como Support Vector Machine o técnicas basadas en árboles. Pueden ser problemas supervisados o no supervisados. En los primeros el principal problema es que debemos tener un gran conjunto de comentarios ya etiquetados con el fin de aprender a partir de estos comentarios etiquetados. En los segundos, nuestro sentimiento se extrae a partir de funciones heurísticas u otras reglas predefinidas.
 	\item \textbf{Aproximación por técnicas basadas en diccionarios.} Estas técnicas se basan en diccionarios elaborados manualmente donde cada palabra tiene una intensidad de sentimiento asociada. Alternativamente a las técnicas basadas en diccionarios tenemos las técnicas basadas en corpus, donde se tienen en cuenta distintos patrones sintácticos tales como palabras que expresan conectividad o por ejemplo contradicción.
 	\item  \textbf{Aproximación por herramientas de Procesamiento del Lenguaje Natural (NLP).} Estas herramientas emplean técnicas computacionales (Aprendizaje automático, inteligenia artificial, inferencia estadística...) unidas a técnicas basadas en lingüística para darnos la polaridad de un texto. Se puede definir también como un software que integra alguna de las 2 técnicas nombradas anteriormente (o ambas) y que ha sido desarrollado con fines comerciales o de investigación, facilitando al usuario el proceso de Sentiment Analysis (sin que este tenga que desarrollar su propio modelo o su propio diccionario).
 \end{itemize}
@@ -173,7 +176,24 @@ Para obtener esta clasificación, existen varias alternativas:
 
 Nuestro problema consiste en la optimización del comportamiento de 7 herramientas de Procesamiento de Lenguaje Natural (NLP) o herramientas de extracción de polaridad con respecto al etiquetado experto de un total de 20 datasets de comentarios y la comparación de los resultados con otras alternativas tales como la agregación de estas herramientas (entre otras). Esta optimización del comportamiento se realizará mediante la asignación de pesos a las herramientas, siendo estos pesos buscados mediante algoritmos genéticos primero y posteriormente técnicas de Differential Evolution.
 
-Partiremos de las intensidades que cada herramienta nos devuelve para cada comentario y nuestro objetivo es que la combinación lineal de las intensidades de cada herramienta ponderadas con el peso de la solución minimice primero el error de clasificación (primeros experimentos) y el posterior error cuadrático.
+Partiremos de las intensidades que cada herramienta nos devuelve para cada comentario y nuestro objetivo es que la combinación lineal de las intensidades de cada herramienta ponderadas con el peso de la solución minimice el error cuadrático, aunque los resultados se mostrarán según el error de clasificación para ser interpretado más fácilmente.
+
+\section{Algoritmos genéticos}
+Para este estudio vamos a considerar dos tipos de algoritmos genéticos, que surgen de la combinación del operador de cruce aritmético con 2 esquemas de evolución diferentes:
+\begin{itemize}
+	\item \textbf{Esquema generacional con elitismo: } Por un lado, vamos a considerar un esquema de evolución generacional, esto es, se seleccionará una generación de padres del mismo tamaño de la población genética que serán posteriormente cruzados y mutados (algunos de ellos). Para mantener el elitismo, nos aseguraremos de que la mejor solución de la población anterior siga apareciendo en la nueva generación. Para ello, si esto no ocurre sustituiremos la peor solución generada en la nueva población por la mejor de la anterior.
+	\item \textbf{Esquema estacionario: } Por otro lado, consideraremos un esquema de evolución estacionario, donde seleccionaremos dos padres que serán posteriormente cruzados y mutados (no siempre, ya lo veremos). Los cromosomas resultado del cruce y mutación de los padres generados, sustituirán a los dos cromosomas más débiles de la población anterior (peor función objetivo) en caso de no ser ellos mismos. 
+\end{itemize}
+
+En cuanto al operador de cruce, como ya se ha comentado, usamos un \textbf{Operador CA}, u operador de cruce aritmético, que cada dos cromosomas padres, genera un cromosoma hijo fruto de la media aritmética componente a componente de ambos padres. Esto es, considerando los padres anteriores, el hijo sería de la forma:
+
+\[
+c_{hijo} = ( \frac{c_{11} + c_{21}}{2}, ..., \frac{c_{1n} + c_{2n}}{2})
+\]
+
+Como este operador genera cada dos padres un único hijo, para generar el mismo número de hijos que con el operador BLX, habrá que utilizar el doble de padres. Esta consideración la veremos con detalle más adelante.
+
+En cuanto a la probabilidad de cruce y mutación para cada uno de los algoritmos genéticos vamos a utilizar, en primer lugar, las probabilidades utilizadas en la práctica 1, que son: 0.7 de probabilidad de cruce (en el generacional) y un 0.001 de probabilidad de mutación por gen producido.
 %-----------------------------------------------------------------------------------------------------
 %	SECCIÓN 2
 %-----------------------------------------------------------------------------------------------------}

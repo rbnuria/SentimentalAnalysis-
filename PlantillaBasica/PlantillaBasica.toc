@@ -1,6 +1,0 @@
-\select@language {spanish}
-\select@language {spanish}
-\contentsline {section}{\numberline {1}Primera Secci\IeC {\'o}n}{2}
-\contentsline {section}{\numberline {2}Segunda Secci\IeC {\'o}n}{2}
-\contentsline {subsection}{\numberline {2.1}Primera subsecci\IeC {\'o}n}{2}
-\contentsline {subsection}{\numberline {2.2}Segunda subsecci\IeC {\'o}n}{2}
