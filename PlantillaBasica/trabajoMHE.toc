@@ -11,3 +11,4 @@
 \contentsline {subsubsection}{\numberline {2.1.3}Algoritmos mem\IeC {\'e}ticos}{7}{subsubsection.2.1.3}
 \contentsline {section}{\numberline {3}Differential Evolution}{7}{section.3}
 \contentsline {section}{\numberline {4}Considerando diferentes corpus}{9}{section.4}
+\contentsline {section}{\numberline {5}Comparaci\IeC {\'o}n entre los algoritmos implementados.}{14}{section.5}

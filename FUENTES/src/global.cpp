@@ -105,6 +105,7 @@ float clasification_fitness(vector <Instance> & data, vector<float> & sol){
 
 }
 
+/*
 float fitness(vector <Instance> & data, vector<float> & sol){
 
 	int num_success = 0;
@@ -133,8 +134,8 @@ float fitness(vector <Instance> & data, vector<float> & sol){
 	return num_success/(data.size() * 1.0);
 
 }
+*/
 
-/*
 
 float fitness(vector <Instance> & data, vector <float> & sol)
 {
@@ -154,7 +155,7 @@ float fitness(vector <Instance> & data, vector <float> & sol)
 
 	return (-acum/(data.size()*1.0));
 }
-*/
+
 
 vector <float> truncate(vector <float> & sol){
 
@@ -335,8 +336,8 @@ void randomSolution(vector <float> & solution){
 	//normalized(solution);
 }
 
-/* PRIMERA VERSION: haciendolo en orden, favoreciendo a los primeros
-vector <float> generateRandomSolution(int size){
+//PRIMERA VERSION: haciendolo en orden, favoreciendo a los primeros
+/*vector <float> generateRandomSolution(int size){
 	vector <float> solution;
 	float acumulado = 0;
 
@@ -350,6 +351,7 @@ vector <float> generateRandomSolution(int size){
 
 	return solution;
 }*/
+
 
 vector <float> generateRandomSolution(int size){
 	vector <float> solution;
@@ -378,6 +380,18 @@ vector <float> generateRandomSolution(int size){
 	return solution;
 }
 
+/*
+vector <float> generateRandomSolution(int size){
+	vector <float> solution;
+
+	for(int i = 0; i < size; i++){
+		solution.push_back(1.0/(size * 1.0));
+	}
+
+
+	return solution;
+
+}*/
 
 
 void shuffle(vector <int> &v){

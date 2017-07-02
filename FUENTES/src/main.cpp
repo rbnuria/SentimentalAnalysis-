@@ -19,7 +19,6 @@ int main(int argc, char ** argv){
 
 	readFile(db, data);
 
-
 	//Normalizamos los datos en {0,0.5,1}
 	db_normalized(data);
 
@@ -40,42 +39,41 @@ int main(int argc, char ** argv){
 	float train_tasa_trivial = 0;
 	float test_tasa_trivial = 0;
 
+
+
+	cout << "-------- AGG-CA" << endl;
+	for(int i = 0; i < 1; i++){
+		cout << "Partición " << i+1;
+		vector <Instance> train_set;
+
+
+		for(int j = 0; j <5; j++){
+			//Obtenemos tamaño del vector
+			if(j != i){
+				train_set.insert(train_set.end(), set[j].begin(), set[j].end());
+			}
+		}
+
+
+		exe_AGGCA(train_set, set[i], test_tasa, tiempo, train_tasa);
+		cout << endl;
+
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
+
+		train_tasa_trivial += aux2;
+		test_tasa_trivial += aux1;
+
+		cout << "Solución trivial: \t" << aux1 << "\t" << "    -    "  << aux2 << endl;
+
+
+
+		train_set.clear();
+	}
+
+	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
+	cout << "Media trivial: \t\t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
 /*
-	cout << "-------- DE-RAND" << endl;
-	for(int i = 0; i < 5; i++){
-		cout << "Partición " << i+1;
-		vector <Instance> train_set;
-
-
-		for(int j = 0; j <5; j++){
-			//Obtenemos tamaño del vector
-			if(j != i){
-				train_set.insert(train_set.end(), set[j].begin(), set[j].end());
-			}
-		}
-
-
-		exe_DE_current_best(train_set, set[i], test_tasa, tiempo, train_tasa);
-		cout << endl;
-
-		float aux1 = clasification_fitness(set[i],trivial_sol);
-		float aux2 = clasification_fitness(train_set,trivial_sol);
-
-		train_tasa_trivial += aux2;
-		test_tasa_trivial += aux1;
-
-		cout << "Solución trivial: \t" << aux1 << "\t" << "    -    "  << aux2 << endl;
-
-
-
-		train_set.clear();
-	}
-
-	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
-	cout << "Media trivial: \t\t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
-
-
-
 	test_tasa_trivial = 0;
 	train_tasa_trivial = 0;
 
@@ -83,8 +81,7 @@ int main(int argc, char ** argv){
 	test_tasa = 0;
 	tiempo = 0;
 
-
-	cout << "-------- DE-current-to-best" << endl;
+	cout << "-------- AGE-CA" << endl;
 	for(int i = 0; i < 5; i++){
 		cout << "Partición " << i+1;
 		vector <Instance> train_set;
@@ -98,7 +95,7 @@ int main(int argc, char ** argv){
 		}
 
 
-		exe_DE_current_best(train_set, set[i], test_tasa, tiempo, train_tasa);
+		exe_AGECA(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
 		float aux1 = clasification_fitness(set[i],trivial_sol);
@@ -125,7 +122,8 @@ int main(int argc, char ** argv){
 	test_tasa = 0;
 	tiempo = 0;
 
-	cout << "-------- DE-best" << endl;
+
+	cout << "-------- AM_10_1" << endl;
 	for(int i = 0; i < 5; i++){
 		cout << "Partición " << i+1;
 		vector <Instance> train_set;
@@ -139,7 +137,7 @@ int main(int argc, char ** argv){
 		}
 
 
-		exe_DE_best(train_set, set[i], test_tasa, tiempo, train_tasa);
+		exe_AM_10_1(train_set, set[i], test_tasa, tiempo, train_tasa);
 		cout << endl;
 
 		float aux1 = clasification_fitness(set[i],trivial_sol);
@@ -148,7 +146,7 @@ int main(int argc, char ** argv){
 		train_tasa_trivial += aux2;
 		test_tasa_trivial += aux1;
 
-		cout << "Solución trivial: \t" << aux1 << "\t" << "    -     "  << aux2 << endl;
+		cout << "Solución trivial: \t" << aux1 << "\t" << "    -    "  << aux2 << endl;
 
 
 
@@ -159,13 +157,14 @@ int main(int argc, char ** argv){
 	cout << "Media trivial: \t\t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
 
 
+	test_tasa_trivial = 0;
+	train_tasa_trivial = 0;
 
 	train_tasa = 0;
 	test_tasa = 0;
 	tiempo = 0;
-*/
 
-
+	cout << "-------- AM_10_01" << endl;
 	for(int i = 0; i < 5; i++){
 		cout << "Partición " << i+1;
 		vector <Instance> train_set;
@@ -196,9 +195,172 @@ int main(int argc, char ** argv){
 	}
 
 	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
+	cout << "Media trivial: \t\t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
+
+
+
+	train_tasa = 0;
+	test_tasa = 0;
+	tiempo = 0;
+
+
+	cout << "-------- AM_10_01mej" << endl;
+
+	for(int i = 0; i < 5; i++){
+		cout << "Partición " << i+1;
+		vector <Instance> train_set;
+
+
+		for(int j = 0; j <5; j++){
+			//Obtenemos tamaño del vector
+			if(j != i){
+				train_set.insert(train_set.end(), set[j].begin(), set[j].end());
+			}
+		}
+
+
+		exe_AM_10_01mej(train_set, set[i], test_tasa, tiempo, train_tasa);
+		cout << endl;
+
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
+
+		train_tasa_trivial += aux2;
+		test_tasa_trivial += aux1;
+
+		cout << "Solución trivial: \t" << aux1 << "\t" << "    -     "  << aux2 << endl;
+
+
+
+		train_set.clear();
+	}
+
+	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
+	cout << "Media trivial: \t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
+
+	
+	test_tasa_trivial = 0;
+	train_tasa_trivial = 0;
+
+	train_tasa = 0;
+	test_tasa = 0;
+	tiempo = 0;
+	cout << "-------- DE-RAND" << endl;
+
+	for(int i = 0; i < 5; i++){
+		cout << "Partición " << i+1;
+		vector <Instance> train_set;
+
+
+		for(int j = 0; j <5; j++){
+			//Obtenemos tamaño del vector
+			if(j != i){
+				train_set.insert(train_set.end(), set[j].begin(), set[j].end());
+			}
+		}
+
+
+		exe_DE_rand(train_set, set[i], test_tasa, tiempo, train_tasa);
+		cout << endl;
+
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
+
+		train_tasa_trivial += aux2;
+		test_tasa_trivial += aux1;
+
+		cout << "Solución trivial: \t" << aux1 << "\t" << "    -     "  << aux2 << endl;
+
+
+
+		train_set.clear();
+	}
+
+	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
 	cout << "Media trivial: \t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
 
 
+		test_tasa_trivial = 0;
+	train_tasa_trivial = 0;
+
+	train_tasa = 0;
+	test_tasa = 0;
+	tiempo = 0;
+
+	cout << "-------- DE-Current-best" << endl;
 
 
+	for(int i = 0; i < 5; i++){
+		cout << "Partición " << i+1;
+		vector <Instance> train_set;
+
+
+		for(int j = 0; j <5; j++){
+			//Obtenemos tamaño del vector
+			if(j != i){
+				train_set.insert(train_set.end(), set[j].begin(), set[j].end());
+			}
+		}
+
+
+		exe_DE_current_best(train_set, set[i], test_tasa, tiempo, train_tasa);
+		cout << endl;
+
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
+
+		train_tasa_trivial += aux2;
+		test_tasa_trivial += aux1;
+
+		cout << "Solución trivial: \t" << aux1 << "\t" << "    -     "  << aux2 << endl;
+
+
+
+		train_set.clear();
+	}
+
+	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
+	cout << "Media trivial: \t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
+
+
+	test_tasa_trivial = 0;
+	train_tasa_trivial = 0;
+
+	train_tasa = 0;
+	test_tasa = 0;
+	tiempo = 0;
+	cout << "-------- DE best" << endl;
+
+	for(int i = 0; i < 5; i++){
+		cout << "Partición " << i+1;
+		vector <Instance> train_set;
+
+
+		for(int j = 0; j <5; j++){
+			//Obtenemos tamaño del vector
+			if(j != i){
+				train_set.insert(train_set.end(), set[j].begin(), set[j].end());
+			}
+		}
+
+
+		exe_DE_best(train_set, set[i], test_tasa, tiempo, train_tasa);
+		cout << endl;
+
+		float aux1 = clasification_fitness(set[i],trivial_sol);
+		float aux2 = clasification_fitness(train_set,trivial_sol);
+
+		train_tasa_trivial += aux2;
+		test_tasa_trivial += aux1;
+
+		cout << "Solución trivial: \t" << aux1 << "\t" << "    -     "  << aux2 << endl;
+
+
+
+		train_set.clear();
+	}
+
+	cout << "Media: \t\t" << test_tasa/5.0 << "\t" << tiempo/5.0 <<  "\t" << train_tasa/5.0 << endl;
+	cout << "Media trivial: \t" << test_tasa_trivial/5.0 << "\t" << "-" <<  "\t" << train_tasa_trivial/5.0 << endl;
+*/
 }

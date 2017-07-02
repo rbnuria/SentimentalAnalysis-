@@ -35,7 +35,7 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 	}
 
 
-	while(eval < 5000000){
+	while(eval < 500000){
 
 		for(unsigned i = 0; i < size_pop; i++){
 			//Seleccionamos tres padres, excluyentes entre sí

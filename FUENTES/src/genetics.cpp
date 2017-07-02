@@ -33,12 +33,17 @@ vector <float> AGG_CA(vector <Instance> & train, vector < vector <float> > & gen
 
 
 
-	while(ev_fit < 100000){
+	while(ev_fit < 500000){
+
+
 
 		//Elegimos los mejores de la generación para la fase de reemplazamiento
 		int max_pos = findMax(fit_first);
 		best_solution = generation[max_pos];
 		float best_fitness = fit_first[max_pos];
+
+			cout << best_fitness << endl;
+	
 
 		/////////FASE DE SELECCION
 
@@ -188,14 +193,19 @@ vector <float> AGE_CA(vector <Instance> & train, vector <vector <float> > & gene
 
 
 	//Generamos 15000 * 2 cromosomas, cada cromosoma tiene train[0].size() genes, luego queremos mutar
-	float nm =  2 * generation.at(0).size() * 0.001; //Probabilidad de cruce en una vuelta
-	int n_iter = round(1.0/nm); //número de iteraciones necesarias para q la probabilidad sea 1 y mutamos un hijo (el primero por ejemplo)
+	//float nm =  2 * generation.at(0).size() * 0.001; //Probabilidad de cruce en una vuelta
+	
+	//MEJORA
+	int nm = round((generation.size() * generation[0].size() * 0.5)); 
 
-	int iter_count=0; //Contador de iteraciones para contabilizar las mutaciones
 
 
-	while(ev_fit < 100000){
 
+	while(ev_fit < 500000){
+		cout << fit_first[findMax(fit_first)] << endl;
+
+		int n_iter = round(1.0/nm); //número de iteraciones necesarias para q la probabilidad sea 1 y mutamos un hijo (el primero por ejemplo)
+		int iter_count=0;
 
 		////FASE DE SELECCIÓN: Realizamos dos torneos binarios, de donde elegiremos a los padres que
 		//serán posteriormente recombinados
@@ -305,6 +315,9 @@ vector <float> AGE_CA(vector <Instance> & train, vector <vector <float> > & gene
 		pos_min = findMin(fit_first);
 		generation.erase(generation.begin() + pos_min);
 		fit_first.erase(fit_first.begin() + pos_min);
+
+		//MEJORA: Disminuimos la probabilidad de mutación al fnial.
+		nm = nm * 0.9;
 
 	}
 

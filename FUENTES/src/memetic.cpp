@@ -96,7 +96,7 @@ vector <float> AM_10_1(vector <Instance> & train, vector <vector <float> > & gen
 	int nm = round((generation.size() * generation[0].size() * 0.001));
 
 
-	while(ev_fit < 150000){
+	while(ev_fit < 500000){
 
 
 		//Cada 10 generaciones aplicamos búsqueda local
@@ -246,7 +246,7 @@ vector <float> AM_10_01(vector <Instance> & train, vector <vector <float> > & ge
 	int nm = round((generation.size() * generation[0].size() * 0.001));
 
 
-	while(ev_fit < 150000){
+	while(ev_fit < 500000){
 
 		//Cada 10 generaciones aplicamos búsqueda local
 		if(n_generation == 10){
@@ -394,7 +394,7 @@ vector <float> AM_10_01mej(vector <Instance> & train, vector <vector <float> > &
 	int nm = round((generation.size() * generation[0].size() * 0.001));
 
 
-	while(ev_fit < 150000){
+	while(ev_fit < 500000){
 
 		//Cada 10 generaciones aplicamos búsqueda local
 		if(n_generation == 10){

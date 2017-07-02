@@ -401,7 +401,7 @@ Vamos a probar sobre las bases de datos:
 
 \begin{table}[H]
 	\begin{center}
-		\resizebox{15cm}{!} {
+		\scalebox{0.9} {
 			\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
 				\hline
 				& \multicolumn{2}{|c|}{Aisopos ntua} & \multicolumn{2}{|c|}{Pang movie} & \multicolumn{2}{|c|}{Sentistrength BBC}\\ \hline
@@ -423,12 +423,12 @@ Vamos a probar sobre las bases de datos:
 
 \begin{table}[H]
 	\begin{center}
-		\resizebox{15cm}{!} {
-			\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+		\scalebox{1}{
+			\begin{tabular}{|l|l|l|l|l|}
 				\hline
 				& \multicolumn{2}{|c|}{Sentistrength Youtube} & \multicolumn{2}{|c|}{Vader Amazon}\\ \hline
-				& Porcentaje acierto &Tiempo & Porcentaje acierto & Tiempo\\ \hline
-				Trivial&62.52\%& - & 48.27\%& -\\ \hline
+				& Porcentaje acierto & Tiempo & Porcentaje acierto & Tiempo\\ \hline
+				Trivial&62.52\% & - & 48.27\%& -\\ \hline
 				AGG-CA& 63.02\%& 9.4789 & 47.87\%& 10.5734\\ \hline
 				AGE-CA& 61.46\%& 9.5385 & 47.11\%& 10.6590\\ \hline
 				AM(10,1)& 62.93\%& 9.3697 & 46.79\% & 10.4552\\ \hline
@@ -522,6 +522,47 @@ A continuación observamos en unas gráficas la importancia de las máquinas par
 	\caption{Pesos de las máquinas para sentistrength\_youtube}
 	\label{fig:youtube}
 \end{figure}
+
+A parte de lo ya comentado anteriormente sobre las soluciones obtenidas en cada corpus, simplemente resaltar la diversidad de ``mejores soluciones'' que se han obtenido dependiendo del problema, donde confirmamos que el problema de la primera aplicación de los algoritmos a la base de datos completa era la diversidad de tipos de comentarios, por lo que no hemos podido encontrar una combinación de estas máquinas que obtenga mayor tasa de acierto.
+
+\section{Comparación entre los algoritmos implementados.}
+
+	En esta sección vamos a estudiar la eficacia de los algoritmos implementados, aunque echando un vistazo rápido a las tablas generadas, podemos concluir rápidamente que no vamos a encontrar uno que sea mejor que otro de forma general, si no que dependerá del conjunto de trabajo. 
+	
+	En cuanto a los algoritmos genéticos, el algoritmo genético generacional ha obtenido siempre mejores resultados que el estacionario, llegando a superar hasta en un 3\% los resultados obtenidos por este segundo. Esto se debe a que el generacional favorece la exploración de soluciones y esto es imprescindible en este tipo de problema. 
+	
+	Vamos a estudiar la convergencia de ambos algoritmos genéticos durante las primeras 50 iteraciones en el DataSet Aisopos\_ntua (estudiamos los algoritmos genéticos con las mejoras dos implementadas), observamos los resultados en las Figuras \ref{fig:aggca} y \ref{fig:ageca}.
+	
+	En estas gráficas se ve claramente la importancia de la exploración con respecto a la explotación de soluciones. En cada generación del algoritmo genético generacional se producen más hijos, por lo cual, hay mayor diversidad en la búsqueda de soluciones, obteniendo soluciones mejores en menos tiempo (observamos la gran bajada que hay en las primeras iteraciones del método), aunque a partir de entonces el método no mejora mucho (de hecho no se llega a encontrar más mejora en el resto de iteraciones del método). Esto se puede deber a la disminución progresiva de la probabilidad de mutación por gen.
+	
+	 Por otro lado, el genético estacionario, al producir solo un hijo por generación es más lento en la búsqueda de soluciones. Observamos que sigue disminuyendo aún donde hemos dejado de imprimir las soluciones, sin embargo, ha conseguido en estas 50 iteraciones una solución peor que la que había conseguido ya el generacional en las 10 primeras. Así, podemos concluir que por regla general, el algoritmo AGG-CA obtendrá mejores resultados que el AGE-CA considerando el mismo número de iteraciones.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{aggca}
+		\caption{Convergencia soluciones AGG-CA}
+		\label{fig:aggca}
+	\end{figure}
+
+	\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{ageca}
+	\caption{Convergencia soluciones AGE-CA}
+	\label{fig:ageca}
+\end{figure}
+
+	Ahora, si nos planteamos la importancia de las dos mejoras incluidas en los algoritmos genéticos básicos implementados, veamos cómo se comporta el algoritmo AGG-CA básico en las 50 primeras iteraciones sobre el mismo DataSet en Figura \ref{fig:aggcano}. 
+	
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{aggca-nomejora}
+		\caption{Convergencia soluciones AGG-CA sin mejora.}
+		\label{fig:aggcano}
+	\end{figure}
+
+	Como podemos observar, la mejor solución obtenida en estas primeras 50 iteraciones no mejora. Esto se debe a que, ignorando las mejoras realizadas se complica la exploración de soluciones, dado que la mutación es mucho menor desde un principio y el cruce es menos brusco al no aplicar el truncamiento. 
+	
 
 %-----------------------------------------------------------------------------------------------------
 %	SECCIÓN 2
