@@ -586,8 +586,15 @@ A parte de lo ya comentado anteriormente sobre las soluciones obtenidas en cada 
 	
 
 \section{Comentarios finales.}
-	
+A raíz de los resultados podemos determinar que el Sentiment Analysis es aun un campo de la Minería de datos con bastante por avanzar. Las herramientas analizadas hemos visto como se comportan de manera distinta dependiendo del dominio de los comentarios, pudiendo deberse esto a dónde estas herramientas han sido entrenadas o a qué tipo de comentarios están destinadas.
 
+Con los algoritmos genéticos y Differential Evolution hemos conseguido mejorar los resultados de la agregación de estas máquinas, sobre todo en los DataSets por separado. Aun así, los resultados no son todo lo buenos que deberían, pues un 60\% consideramos que es una tasa de acierto bastante baja.
+
+Al probar con todos los comentarios juntos en un mismo corpus, vemos como los resultados apenas mejoran los resultados de la solución trivial. Esto es debido,  como ya he comentado, a que cada herramienta se comporta mejor sobre un tipo de comentarios concretos.
+
+En cuanto a los algoritmos empleados, vemos como los algoritmos que aportan más exploración y diversidad en la búsqueda son los que mejores resultados nos devuelven. Se debe a que el problema tiene un espacio de búsqueda infinito, por lo que cuanta más diversidad y más subespacios dentro del espacio global de búsqueda exploremos, más posibilidades hay de obtener una buena solución.
+
+Según los resultados obtenidos, podemos afirmar que para continuar la investigación en este campo, tendremos que considerar algoritmos que enfaticen estos aspectos comentados o mejoras de los mismos hasta conseguir una solución que aporte la fiabilidad suficiente como para llegar a automatizar por completo el análisis de sentimientos en la Web 2.0.
 %-----------------------------------------------------------------------------------------------------
 %	SECCIÓN 2
 %-----------------------------------------------------------------------------------------------------}
