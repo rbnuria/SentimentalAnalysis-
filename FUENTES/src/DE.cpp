@@ -59,6 +59,10 @@ void DE_rand(vector <Instance> & train, vector <float> & sol, float CR, float F)
 
 			//Miro si el nuevo hijo es mejor que el padre
 			float offspring_fit = fitness(train, offspring);
+			if(eval < 1000){
+				cout << offspring_fit << endl;
+
+			}
 			eval++;
 
 			if(offspring_fit > fit[i]){
@@ -134,6 +138,10 @@ void DE_current_best(vector <Instance> & train, vector <float> & sol, float CR, 
 
 			//Miro si el nuevo hijo es mejor que el padre
 			float offspring_fit = fitness(train, offspring);
+			if(eval < 1000){
+				cout << offspring_fit << endl;
+
+			}
 			eval++;
 
 			if(offspring_fit > fit[i]){
@@ -203,6 +211,10 @@ void DE_best(vector <Instance> & train, vector <float> & sol, float CR, float F)
 
 			//Miro si el nuevo hijo es mejor que el padre
 			float offspring_fit = fitness(train, offspring);
+			if(eval < 1000){
+				cout << offspring_fit << endl;
+
+			}
 			eval++;
 
 			if(offspring_fit > fit[i]){

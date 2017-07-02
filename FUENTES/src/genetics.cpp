@@ -41,8 +41,6 @@ vector <float> AGG_CA(vector <Instance> & train, vector < vector <float> > & gen
 		int max_pos = findMax(fit_first);
 		best_solution = generation[max_pos];
 		float best_fitness = fit_first[max_pos];
-
-			cout << best_fitness << endl;
 	
 
 		/////////FASE DE SELECCION
@@ -202,8 +200,6 @@ vector <float> AGE_CA(vector <Instance> & train, vector <vector <float> > & gene
 
 
 	while(ev_fit < 500000){
-		cout << fit_first[findMax(fit_first)] << endl;
-
 		int n_iter = round(1.0/nm); //número de iteraciones necesarias para q la probabilidad sea 1 y mutamos un hijo (el primero por ejemplo)
 		int iter_count=0;
 

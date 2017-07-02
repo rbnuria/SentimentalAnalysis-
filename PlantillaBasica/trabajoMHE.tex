@@ -411,7 +411,7 @@ Vamos a probar sobre las bases de datos:
 				AGE-CA& 64.80\%& 1.9521 & 64.01\% & 29.8232 & 62.20\% &3.2819\\ \hline
 				AM(10,1)& 68.00\%& 1.4341 &  64.25\% & 30.1023 & 62.50\%& 2.8962\\ \hline
 				AM(10,0.1)& 68.00\%& 1.5179 &64.28\% & 30.1842 & 64.60\%& 2.9668\\ \hline
-				AM(10,0.1mej)& 67.60\%& 1.4811 &.64.24\% & 29.8356  & 60.40\%& 2.9061\\ \hline
+				AM(10,0.1mej)& 67.60\%& 1.4811 &64.24\% & 29.8356  & 60.40\%& 2.9061\\ \hline
 				DE/Rand& 67.80\%& 1.7716 & 64.22\% & 29.4543  & 64.30\%&3.0238\\ \hline
 				DE/Current-to-best& 67.60\%&  1.7402 & 64.23\% & 29.9380 & 63.20\%& 2.9881\\ \hline
 				DE/Best/1& 67.80\%& 1.7096 &  64.24\%& 29.1250& 64.20\%& 3.0015\\ \hline
@@ -562,6 +562,30 @@ A parte de lo ya comentado anteriormente sobre las soluciones obtenidas en cada 
 	\end{figure}
 
 	Como podemos observar, la mejor solución obtenida en estas primeras 50 iteraciones no mejora. Esto se debe a que, ignorando las mejoras realizadas se complica la exploración de soluciones, dado que la mutación es mucho menor desde un principio y el cruce es menos brusco al no aplicar el truncamiento. 
+	
+	En cuanto a los meméticos implementados, la diferencia por regla general es poca. La diferencia entre estos algoritmos los individuos de la generación a los cuales se les aplica la búsqueda local. En el caso del primer memético, dado que se le aplica a todos, te aseguras no despreciar soluciones que con una búsqueda local pudieran dar soluciones buenas, a costa de utilizar muchas evaluaciones de la función objetivo para ello. En los otros dos sin embargo, se seleccionan ciertos individuos de la generación a los que aplicar la búsqueda local. En el primer caso de estos, se aplica aleatoriamente mientras que en el segundo a los mejores. Podríamos pensar que aplicarlo a los mejores tendría que dar mejores resultados siempre, sin embargo, soluciones que por sí solas produzcan un mayor error cuadrático pueden producir mejores soluciones al aplicar la búsqueda local, así, el primero de estos ha obtenido en ocasiones mejores resultados que el segundo.
+	
+	Por todo lo comentado, los tres meméticos tienen ventajas y desventajas y se comportan de forma parecida en los problemas considerados.
+	
+	Para terminar con este apartado, estudiamos los algoritmos diferenciales implementados.  En este caso, la similitud de resultados es incluso mayor aunque por regla general el que peor resultado ha obtenido ha sido el DE/Current-to-best. 
+	
+	Esto se debe a que el primero enfatiza la exploración de soluciones y el último la explotación, acercando siempre la solución hacia la mejor generada hasta el momento. El segundo de estos intenta enfatizar en explotación pero en menos medida. Por esto, se queda a medio camino entre ambas estrategias de búsqueda de soluciones obteniendo, de forma general, peores resultados.
+	
+	Para finalizar esta sección, vamos a estudiar el comportamiento de las soluciones generadas en un algoritmo de Differential Evolution (Rand). 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{rand}
+		\caption{Soluciones generadas.}
+		\label{fig:rand}
+	\end{figure}
+	
+
+	Podemos observar en la Figura \ref{fig:rand} como se van generando soluciones de forma muy aleatoria (gran exploración) y va convergiendo poco a poco a la solución final obtenida.
+	
+	
+
+\section{Comentarios finales.}
 	
 
 %-----------------------------------------------------------------------------------------------------
