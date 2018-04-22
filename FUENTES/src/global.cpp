@@ -9,7 +9,7 @@
 using namespace std;
 
 
-Instance::Instance(vector<float> values_, float label_)
+Instance::Instance(vector<float> values_, string label_)
 {
 	values = values_;
 	label = label_;
@@ -34,12 +34,12 @@ bool &Instance::operator==(Instance & inst){
 
 
 
-void readFile(char * name_file, vector <Instance> & d)
+void readFile(char * name_file, vector <Instance> & d, bool front)
 {
 	//Abrimos fichero
 	ifstream fi(name_file);
-	string line;
 
+	string line;
 	while(!fi.eof())
 	{
 		getline(fi, line);
@@ -47,14 +47,21 @@ void readFile(char * name_file, vector <Instance> & d)
 		//Variables auxiliares
 		string aux;
 		vector <float> vector_aux;
-		float label; //Etiquetas
-
+		string label; //Etiquetas
+		string label_f; 
+		string label_b;
+		bool first = true;
 
 		for(unsigned i = 0 ; i < line.size() ; i++)
 		{
-			if(line[i] == ' ')
+			if(line[i] == ',')
 			{
 				vector_aux.push_back(atof(aux.c_str()));
+				
+				if(first){ //Guardamos el primer valor por si es la etiqueta
+					label_f = aux;
+					first = false;
+				}
 
 				aux.clear();
 			}else
@@ -64,7 +71,19 @@ void readFile(char * name_file, vector <Instance> & d)
 		}
 
 		//Guardamos el último valor por si es la etiqueta
-		label = atof(aux.c_str());
+		label_b = aux;
+		vector_aux.push_back(atof(aux.c_str()));
+
+		//Guardamos la etiqueta
+		if(front){ 
+			label = label_f;
+			//Quitamos la etiqueta del vector
+			vector_aux.erase(vector_aux.begin());
+		}else{
+			label = label_b;
+			//Quitamos la etiqueta del vector
+			vector_aux.pop_back();
+		}	
 		
 		//Creamos 
 		Instance c(vector_aux, label);
@@ -76,36 +95,6 @@ void readFile(char * name_file, vector <Instance> & d)
 
 
 //Utilizamos como función fitness el cálculo del tanto por ciento de acierto.
-float clasification_fitness(vector <Instance> & data, vector<float> & sol){
-
-	int num_success = 0;
-	
-	for(unsigned i = 0; i < data.size(); i++){
-		float estimated_value=0;
-
-		for(unsigned j = 0; j < data[i].values.size(); j++){
-			estimated_value += data[i].values[j] * sol[j];
-		}
-
-		//Truncamos el valor estimado [0,0.33] [0.33, 0.66] [0.66,1]
-		if(estimated_value <= 0.33){
-			estimated_value = 0;
-		}else if(estimated_value <= 0.66){
-			estimated_value = 0.5;
-		}else{
-			estimated_value = 1;
-		}
-
-		if(estimated_value == data[i].label){
-			num_success++;
-		}
-	}
-
-	return num_success/(data.size() * 1.0);
-
-}
-
-/*
 float fitness(vector <Instance> & data, vector<float> & sol){
 
 	int num_success = 0;
@@ -118,9 +107,9 @@ float fitness(vector <Instance> & data, vector<float> & sol){
 		}
 
 		//Truncamos el valor estimado [0,0.33] [0.33, 0.66] [0.66,1]
-		if(estimated_value <= 0.33){
+		if(0 <= estimated_value <= 0.33){
 			estimated_value = 0;
-		}else if(estimated_value <= 0.66){
+		}else if(estimated value < 0.66){
 			estimated_value = 0.5;
 		}else{
 			estimated_value = 1;
@@ -131,31 +120,9 @@ float fitness(vector <Instance> & data, vector<float> & sol){
 		}
 	}
 
-	return num_success/(data.size() * 1.0);
+	return num_success/data.size();
 
 }
-*/
-
-
-float fitness(vector <Instance> & data, vector <float> & sol)
-{
-	float acum = 0.0;
-
-	for(unsigned i = 0 ; i < data.size() ; i++)
-	{
-		float estimated_value = 0;
-
-		for(unsigned j = 0 ; j < data[i].values.size() ; j++)
-		{
-			estimated_value += data[i].values[j] * sol[j];
-		}
-
-		acum += (estimated_value-data[i].label)*(estimated_value-data[i].label);
-	}
-
-	return (-acum/(data.size()*1.0));
-}
-
 
 vector <float> truncate(vector <float> & sol){
 
@@ -196,68 +163,15 @@ void normalized(vector<float> & sol){
 	}
 }
 
-/* Deprecated.
-//Función que normaliza los datos a [0,1]
+//Función que normaliza los datos de {-1,0,1} a {0,0.5,1}
 void db_normalized(vector <Instance> & data){
 	
 	for(unsigned i = 0; i < data.size(); i++){
 		for(unsigned j = 0; j < data[i].values.size(); j++){
+			
 			data[i].values[j] = (data[i].values[j] + 1)/2.0;
 		}
-
-		data[i].label = (data[i].label + 1)/2.0;
 	}
-}*/
-
-
-void db_normalized(vector <Instance> & data){
-	
-	//Vector de máximos y mínimos para cada característica
-	//Tamaño de los vectores (Instance.at(i).values.size())
-	float max, min;	
-	//Vamos recorriendo característica a característica en cada una de las instancias buscando
-	//el máximo y el mínimo
-	for(unsigned i = 0; i < data.at(0).values.size(); i++){
-		min = 10000000;
-		max = -100000;
-
-
-		for(unsigned j = 0; j < data.size(); j++){
-
-			//Si hemos encontrado uno más grande
-			if(data.at(j).values.at(i) > max){
-				max = data.at(j).values.at(i);
-			}
-
-			//Si hemos encontrado uno más pequeño
-			if(data.at(j).values.at(i) < min){
-				min = data.at(j).values.at(i);
-			}
-
-		}
-
-
-		//Una vez encontrado minimo y máximo para la característica "i", la normalizamos
-
-		for(unsigned j = 0; j < data.size(); j++){
-			if(max != min){
-				data.at(j).values.at(i) = (data.at(j).values.at(i)-min)/(max-min);
-			}else{
-				data.at(j).values.at(i) = 0.0;
-			}
-
-
-
-
-		}	
-	}
-
-	//Cambiamos la etiqueta al {0, 0.5, 1}
-	for(unsigned i = 0; i < data.size(); i++){
-		data[i].label = (data[i].label + 1)/2.0;
-	}
-
-
 }
 
 
@@ -267,7 +181,7 @@ void particionate(vector <Instance> & data, vector < vector <Instance> > & sets)
 	vector <int> pos_lab2;
 
 	//Identificamos como primera etiqueta la etiqueta del primer elemento
-	float label1 = data.at(0).label;
+	string label1 = data.at(0).label;
 
 	//Guardamos las posiciones de los vectores según su etiqueta
 	for(unsigned i = 0; i < data.size(); i++){
@@ -324,6 +238,7 @@ void randomSolution(vector <float> & solution){
 
 	for(unsigned i = 0; i < solution.size(); i++){
 		rand_numb = distribution_random_1(generator_random_1);
+		
 		//Creo que esto no hace falta nunca.
 		if(rand_numb < 0.0){
 			rand_numb = 0.0;
@@ -336,62 +251,21 @@ void randomSolution(vector <float> & solution){
 	//normalized(solution);
 }
 
-//PRIMERA VERSION: haciendolo en orden, favoreciendo a los primeros
-/*vector <float> generateRandomSolution(int size){
-	vector <float> solution;
-	float acumulado = 0;
-
-	for(int i = 0; i < size; i++){
-		float rand_numb = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(1-acumulado)));
-
-		acumulado += rand_numb;
-		solution.push_back(rand_numb);
-
-	}
-
-	return solution;
-}*/
-
+//Lo generamos con un aleatorio entre 0,1
+default_random_engine generator_random;
+uniform_real_distribution<float> distribution_random(0,1);
 
 vector <float> generateRandomSolution(int size){
 	vector <float> solution;
-	float acumulado = 0;
 
 	for(int i = 0; i < size; i++){
-		float rand_numb = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(1-acumulado)));
-		acumulado += rand_numb;
+		float rand_numb = distribution_random(generator_random);
 		solution.push_back(rand_numb);
-
 	}
 
-	shuffle(solution.begin(), solution.end(),std::default_random_engine(1));
-
-	//MEJORA: truncar soluciones
-	/*for(unsigned i = 0; i < size; i++){
-		if(solution[i] < 0.1){
-			solution[i] = 0.0;
-		}
-
-		if(solution[i] > 0.9){
-			solution[i] = 1.0;
-		}
-	}*/
 
 	return solution;
 }
-
-/*
-vector <float> generateRandomSolution(int size){
-	vector <float> solution;
-
-	for(int i = 0; i < size; i++){
-		solution.push_back(1.0/(size * 1.0));
-	}
-
-
-	return solution;
-
-}*/
 
 
 void shuffle(vector <int> &v){
@@ -448,68 +322,36 @@ void swap(vector<int>  & v, int pos1, int pos2){
 	v.at(pos2) = aux;
 }
 
-int findMin(vector <float> & v){
-	float min = INF;
-	int pos = 0;
+void exe_1NN(vector <Instance> & train, vector <Instance> & test, float & tasa, float & time1, float  & red1, float & agr1){
+	//Variables auxilaires
+	unsigned t0, t1;
+	float elapsed_time;
+
+
+	vector <float> sol;
+	//Asignamos al vector sol el tamaño que hace falta y lo inicializamos todo a 0
+	for(unsigned i = 0; i < train.at(0).values.size(); i++){
+		sol.push_back(1);
+	}
+
+
+	t0 = clock();
+	float aux2 = fitness_1NN(train, test);
+	t1 = clock();
+
 	
-	for(unsigned i = 0; i < v.size(); i++){
-		if(v.at(i) < min){
-			min = v[i];
-			pos = i;
-		}
-	}
+	float aux4 = calculate_tasa_red(sol);
+	//float aux2 = calculate_tasa_clas(test, sol);
 
-	return pos;
-}
+	float agr = aux2*0.5 + aux4*0.5;
 
+	elapsed_time = (float)((t1-t0)*1.0 / CLOCKS_PER_SEC);
 
-int findMax(vector <float> & v){
-	float max = -9999999;
-	int pos;
-	
-	for(unsigned i = 0; i < v.size(); i++){
-		if(v.at(i) > max){
-			max = v[i];
-			pos = i;
-		}
-	}
+	tasa+=aux2;
+	time1+=elapsed_time;
+	red1+= aux4;
+	agr1+=agr;
 
-	return pos;
-}
-
-//Normalizamos
-void normalize_solution(vector <float> & sol){
-	//Normalizamos la solución en [0,1]
-	float min = 100000;
-	float max = -100000;
-	float sum = 0;
-
-
-	//Buscamos máximo y mínimo.
-	for(unsigned i = 0; i < sol.size(); i++){
-		if(sol[i] < min){
-			min = sol[i];
-		}
-
-		if(sol[i] > max){
-			max = sol[i];
-		}
-	}
-
-	//Normalizamos en [0,1] y calculamos la suma
-	for(unsigned i = 0; i < sol.size(); i++){
-		if(max != min){
-			sol[i] = (sol[i] - min)/(max-min);
-		}else{
-			sol[i] = 0.0;
-		}
-
-		sum += sol[i];
-	}
-
-	//Hacemos que sumen todas las soluciones 1.
-	for(unsigned i = 0; i < sol.size(); i++){
-		sol[i] = sol[i]/sum;
-	}
+	cout << "&" << aux2 << "&" << aux4 << "&" << agr << "&" << elapsed_time;
 }
 
